@@ -4,6 +4,8 @@ import router from './router'
 import store from './store'
 import './assets/tailwind.css'
 import './assets/images/home.jpg'
+import './assets/images/completetasks.jpg'
+import './assets/images/incompletetasks.jpg'
 
 
 

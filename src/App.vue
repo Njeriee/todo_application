@@ -32,10 +32,10 @@
         <ul class="navbar-nav flex flex-col pl-0 list-style-none mr-auto md:flex-row">
           <li class="nav-item"><router-link to="/">Home</router-link></li>
           <li class="nav-item">
-            <router-link to="/complete tasks">Complete Tasks</router-link>
+            <router-link to="/completetasks">Complete Tasks</router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/incomplete tasks">Incomplete Tasks</router-link>
+            <router-link to="/incompletetasks">Incomplete Tasks</router-link>
           </li>
         </ul>
       </div>

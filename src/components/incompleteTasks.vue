@@ -1,10 +1,9 @@
 <template>
-  <div class="flex flex-col md:flex-row py-10 justify-center m-10 font-sans bg-white" >
+<div class="flex flex-col md:flex-row py-10 justify-center m-10 font-sans bg-white">
     <div class="md:flex-col basis-1/2">
-      <img src="../assets/images/completetasks.jpg" alt="">
+        <img src="../assets/images/home.jpg" alt="">
     </div>
-    <div class="md:flex-col basis-1/2">
-      <div class="my-5 justify-center">
+    <div class="my-5 justify-center md:flex-col basis-1/2">
       <table>
         <thead class="my-5">
           <tr>
@@ -78,23 +77,5 @@
         </tbody>
       </table>
     </div>
-    </div>
   </div>
 </template>
-
-<script>
-import { mapGetters, mapState } from "vuex";
-
-export default {
-  name: "completeTasks",
-  data() {},
-  computed: {
-    ...mapState({
-      complete: "completeTasks",
-    }),
-    ...mapGetters({
-      completeTasks: "getComplete",
-    }),
-  },
-};
-</script>

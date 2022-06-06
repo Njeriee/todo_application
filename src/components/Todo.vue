@@ -1,7 +1,9 @@
 <template>
-  <div class="flex flex-col md:flex-row py-10 justify-center m-10 font-sans bg-white">
-    <div class="md:flex-col basis-1/2 ">
-      <img src=".././assets/images/home.jpg" alt="image here" />
+  <div
+    class="flex flex-col md:flex-row py-10 justify-center m-10 font-sans bg-white"
+  >
+    <div class="md:flex-col basis-1/2">
+      <img src=".././assets/images/incompletetasks.jpg" alt="image here" />
     </div>
     <div class="md:flex-col basis-1/2">
       <div class="font-bold text-4xl">
@@ -24,7 +26,7 @@
                 <input
                   class="p-5 rounded-lg"
                   type="text"
-                  v-model="task.title"
+                  v-model.lazy="task.title"
                 />
               </dt>
               <dd class="m-2 bg-white rounded px-4 text-slate-400">
@@ -33,7 +35,7 @@
                   class="p-5"
                   type="date"
                   id="dueDate"
-                  v-model="task.due_date"
+                  v-model.lazy="task.due_date"
                 />
               </dd>
               <dd class="m-2 bg-white rounded px-4 text-slate-400">
@@ -41,16 +43,16 @@
                 <input
                   class="p-10 rounded-lg"
                   type="text"
-                  v-model="task.description"
+                  v-model.lazy="task.description"
                 />
               </dd>
             </dl>
           </form>
           <button
             class="m-2 p-2 text-white rounded-lg bg-blue-300"
-            @click="addTask"
+            @click="pushTask()"
           >
-            add task
+            {{action === 'addTask' ? 'Add Task': 'Edit Task' }}
           </button>
         </div>
       </div>
@@ -68,9 +70,13 @@
             </tr>
           </thead>
           <tbody class="rounded-lg">
-            <tr class="py-5 my-5 rounded-lg bg-stone-200" v-for="t in tasks" :key="t.id">
+            <tr
+              class="py-5 my-5 rounded-lg bg-stone-200"
+              v-for="t in tasks"
+              :key="t.id"
+            >
               <td class="-4">
-                <input type="checkbox" v-model="t.complete"  value="completed"/>
+                <input type="checkbox" v-model="t.complete" value="completed" @click="taskComplete" />
               </td>
               <td>
                 <dl>
@@ -79,7 +85,7 @@
                 </dl>
               </td>
               <td>
-                {{t.date_created}}
+                {{ t.date_created }}
               </td>
               <td>
                 {{ t.due_date }}
@@ -88,41 +94,47 @@
                 {{t.date_completed}}
               </td> -->
               <td>
-                {{t.status}}
+                {{ t.complete }}
               </td>
               <td class="">
-                  <button class="bg-red-300 p-4 rounded-lg mr-4 my-2" @click="deletetask(t.id)">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  stroke-width="2"
+                <button
+                  class="bg-red-300 p-4 rounded-lg mr-4 my-2"
+                  @click="deletetask(t.id)"
                 >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                  />
-                </svg>
-            </button>
-            <button class="bg-blue-300 p-4 rounded-lg mr-4" @click="editTask(t)" >
-              <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  stroke-width="2"
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6 text-white"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    />
+                  </svg>
+                </button>
+                <button
+                  class="bg-blue-300 p-4 rounded-lg mr-4"
+                  @click="editTask(t)"
                 >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                  />
-                </svg>
-            </button>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6 text-white"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                    />
+                  </svg>
+                </button>
               </td>
             </tr>
           </tbody>
@@ -144,29 +156,51 @@ export default {
     return {
       task: {},
       showInput: false,
-      
+      action: "addTask",
     };
   },
   methods: {
-    toggleInput(){
-      this.showInput = !this.showInput
+    toggleInput() {
+      this.showInput = !this.showInput;
     },
     addTask() {
       this.$store.commit("addTask", this.task);
       this.task = {};
-      this.toggleInput()
+      this.toggleInput();
     },
-    deletetask(id){
-      this.$store.commit('deleteTask', id)
+    deletetask(id) {
+      if (confirm("Are you sure you want to delete?")){
+        this.$store.commit("deleteTask", id);
+      } 
+      
     },
-    editTask(task){
-      this.toggleInput()
-      this.task = task
-      // this.$store.commit('editTask')
+    editTask(task) {
+      this.action = 'editTask'
+      this.task = task;
+      this.toggleInput();
+      
     },
-    addComplete(){
-      this.$store.commit('complete')
-    }
+    pushTask() {
+      if (this.action === "addTask") {
+        console.log("hey");
+        this.$store.commit("addTask", this.task);
+        this.task = {}
+        this.toggleInput();
+      }
+      else{
+
+        console.log('okrrrrr')
+        this.$store.commit('editTask', this.task)
+        this.action = 'addTask'
+        this.task = {};
+        this.toggleInput()
+        
+      }
+    },
+
+    addComplete() {
+      this.$store.commit("complete");
+    },
   },
   computed: {
     ...mapState({
@@ -177,20 +211,18 @@ export default {
     // }),
   },
 
-  watch:{
-    taskComplete(){
-      if (this.taskComplete === true){
-        console.log('hey')
-        this.addComplete()
+  watch: {
+    taskComplete() {
+      if (this.t.complete === true) {
+        console.log("hey");
+        this.addComplete();
       }
-    }
+    },
   },
 
-  beforeCreate(){
-    
-    this.$store.dispatch('fetchTasks')
-    
-  }
+  beforeCreate() {
+    this.$store.dispatch("fetchTasks");
+  },
 };
 </script>
 
