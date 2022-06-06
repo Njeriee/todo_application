@@ -5,4 +5,6 @@ import store from './store'
 import './assets/tailwind.css'
 import './assets/images/home.jpg'
 
+
+
 createApp(App).use(router).use(store).use(router).mount('#app')

@@ -8,7 +8,7 @@ const routes = [
     component: HomeView
   },
   {
-    path: '/complete tasks',
+    path: '/completetasks',
     name: 'complete tasks',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
@@ -16,7 +16,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "completetasks" */ '../views/CompleteTasks.vue')
   },
   {
-    path: '/incomplete tasks',
+    path: '/incompletetasks',
     name: 'incomplete tasks',
     component: () => import(/* webpackChunkName: "incompletetasks" */ '../views/IncompleteTasks.vue')
   }

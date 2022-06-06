@@ -70,7 +70,7 @@
           <tbody class="rounded-lg">
             <tr class="py-5 my-5 rounded-lg bg-stone-200" v-for="t in tasks" :key="t.id">
               <td class="-4">
-                <input type="checkbox" v-model="taskComplete" @click="addComplete" value="completed"/>
+                <input type="checkbox" v-model="t.complete"  value="completed"/>
               </td>
               <td>
                 <dl>
@@ -91,15 +91,44 @@
                 {{t.status}}
               </td>
               <td class="">
-                <button class="">edit task</button>
-                <button class="mx-4">delete task</button>
+                  <button class="bg-red-300 p-4 rounded-lg mr-4 my-2" @click="deletetask(t.id)">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6 text-white"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                  />
+                </svg>
+            </button>
+            <button class="bg-blue-300 p-4 rounded-lg mr-4" @click="editTask(t)" >
+              <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6 text-white"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                  />
+                </svg>
+            </button>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
-    {{taskComplete}}
   </div>
 </template>
 
@@ -114,8 +143,8 @@ export default {
     // thedate = document.getElementById('dueDate').disbled = true
     return {
       task: {},
-      showInput: false, 
-      taskComplete: []
+      showInput: false,
+      
     };
   },
   methods: {
@@ -127,8 +156,16 @@ export default {
       this.task = {};
       this.toggleInput()
     },
+    deletetask(id){
+      this.$store.commit('deleteTask', id)
+    },
+    editTask(task){
+      this.toggleInput()
+      this.task = task
+      // this.$store.commit('editTask')
+    },
     addComplete(){
-      this.$store.commit('complete', this.taskComplete)
+      this.$store.commit('complete')
     }
   },
   computed: {
@@ -139,6 +176,21 @@ export default {
     //   return : this.$store.state.completeTasks
     // }),
   },
+
+  watch:{
+    taskComplete(){
+      if (this.taskComplete === true){
+        console.log('hey')
+        this.addComplete()
+      }
+    }
+  },
+
+  beforeCreate(){
+    
+    this.$store.dispatch('fetchTasks')
+    
+  }
 };
 </script>
 
