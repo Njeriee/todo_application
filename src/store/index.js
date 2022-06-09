@@ -7,17 +7,18 @@ export default createStore({
     completeTasks: [],
     incompleteTasks: [],
   },
+
   getters: {
     getComplete: (state) => state.completeTasks,
-    getIncomplete: (state) => state.incompleteTasks,
+    getIncomplete: state => state.tasks.filter((task) => ! task.complete ),
+    getdone: state => state.tasks.filter((task) => task.complete),
+    getTasks: (state) => state.tasks
   },
 
   mutations: {
     set_task(state, res) {
       // state.tasks.push(res)
       state.tasks = res;
-
-      console.log("state", state.tasks);
     },
     addTask(state, task) {
       let length = state.tasks.length;
@@ -51,12 +52,15 @@ export default createStore({
         tasks[index] = task;
         state.tasks = tasks;
       }
+      
     },
   },
   actions: {
-    complete(state, task) {
-      if (task.complete === true) {
-        state.completeTasks.push(task.complete);
+    complete(state) {
+      if (state.tasks.complete === true) {
+        state.tasks = 'complete'
+        state.completeTasks.push(this.task);
+        console.log('hey')
       }
     },
 
@@ -65,10 +69,10 @@ export default createStore({
       Axios.get(baseURL).then((response) => {
         // console.log(response.data)
         const res = response.data;
-        console.log(res);
+        // console.log(res);
         res.forEach((element) => {
           element.id = parseInt(element.id);
-          // console.log('tuko hapa')
+          
         });
         this.commit("set_task", res);
       });

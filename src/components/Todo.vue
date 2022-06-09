@@ -1,17 +1,17 @@
 <template>
   <div
-    class="flex flex-col md:flex-row py-10 justify-center m-10 font-sans bg-white"
+    class="flex flex-col lg:flex-row py-10 justify-center m-10 font-sans bg-white"
   >
     <div class="md:flex-col basis-1/2">
       <img src=".././assets/images/incompletetasks.jpg" alt="image here" />
     </div>
-    <div class="md:flex-col basis-1/2">
-      <div class="font-bold text-4xl">
+    <div class="lg:flex-col basis-1/2">
+      <div class="font-bold text-4xl text-secondary">
         <h1>Hi here is a list of your tasks !</h1>
       </div>
       <div>
         <button
-          class="my-4 p-2 text-white rounded-lg bg-blue-300"
+          class="my-4 p-2 text-white rounded-lg bg-primary"
           @click="toggleInput"
         >
           Add a task
@@ -19,12 +19,12 @@
       </div>
       <div v-if="showInput">
         <div class="p-5 bg-stone-200 rounded-lg text-left">
-          <form action="">
+          <form>
             <dl>
               <dt class="m-2 bg-white rounded px-4 text-slate-400">
                 <label for="">Task title</label>
                 <input
-                  class="p-5 rounded-lg"
+                  class="md:p-5 rounded-lg"
                   type="text"
                   v-model.lazy="task.title"
                 />
@@ -41,7 +41,7 @@
               <dd class="m-2 bg-white rounded px-4 text-slate-400">
                 <label for="">Task description</label>
                 <input
-                  class="p-10 rounded-lg"
+                  class="md:p-10 rounded-lg"
                   type="text"
                   v-model.lazy="task.description"
                 />
@@ -49,39 +49,38 @@
             </dl>
           </form>
           <button
-            class="m-2 p-2 text-white rounded-lg bg-blue-300"
+            class="m-2 p-2 text-white rounded-lg bg-primary"
             @click="pushTask()"
           >
             {{action === 'addTask' ? 'Add Task': 'Edit Task' }}
           </button>
         </div>
       </div>
-      <div class="my-5 justify-center">
-        <table>
-          <thead class="my-5">
+      <div class="p-2 m-2 md:px-5 md:justify-center rounded-lg bg-stone-200">
+        <table class="table-auto">
+          <thead class="md:my-5 text-xl">
             <tr>
-              <th class="px-5">mark complete</th>
-              <th class="px-5">task</th>
-              <th class="px-5">date added</th>
-              <th class="px-5">due date</th>
+              <th class="md:px-5 pr-2">mark complete</th>
+              <th class="md:px-5 pr-2">task</th>
+              <th class="md:px-5 pr-2">date added</th>
+              <th class="md:px-5 pr-2">due date</th>
               <!-- <th class="px-5">date completed</th> -->
-              <th class="px-5">status</th>
-              <th class="px-5">action</th>
+              <th class="md:px-5 pr-2">status</th>
+              <th class="md:px-5 pr-2">action</th>
             </tr>
           </thead>
           <tbody class="rounded-lg">
             <tr
-              class="py-5 my-5 rounded-lg bg-stone-200"
-              v-for="t in tasks"
+              v-for="t in mytasks"
               :key="t.id"
             >
-              <td class="-4">
-                <input type="checkbox" v-model="t.complete" value="completed" @click="taskComplete" />
+              <td class="pr-2">
+                <input type="checkbox" @click="complete" v-model="t.complete" value="completed"/>
               </td>
-              <td>
+              <td >
                 <dl>
                   <dt class="text-2xl font-semibold">{{ t.title }}</dt>
-                  <dd>{{ t.description }}</dd>
+                  <dd class="italic">{{ t.description }}</dd>
                 </dl>
               </td>
               <td>
@@ -94,11 +93,11 @@
                 {{t.date_completed}}
               </td> -->
               <td>
-                {{ t.complete }}
+                {{ t.status }}
               </td>
               <td class="">
                 <button
-                  class="bg-red-300 p-4 rounded-lg mr-4 my-2"
+                  class="bg-red-500 p-4 rounded-lg md:mr-4 my-2"
                   @click="deletetask(t.id)"
                 >
                   <svg
@@ -117,7 +116,7 @@
                   </svg>
                 </button>
                 <button
-                  class="bg-blue-300 p-4 rounded-lg mr-4"
+                  class="bg-primary p-4 rounded-lg md:mr-4"
                   @click="editTask(t)"
                 >
                   <svg
@@ -140,16 +139,16 @@
           </tbody>
         </table>
       </div>
+      {{completetasks}}
     </div>
   </div>
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
   name: "ToDo",
-  props: {},
 
   data() {
     // thedate = document.getElementById('dueDate').disbled = true
@@ -160,6 +159,11 @@ export default {
     };
   },
   methods: {
+    complete(){
+        console.log()
+      // this.$store.dispatch("complete")
+     
+    },
     toggleInput() {
       this.showInput = !this.showInput;
     },
@@ -168,6 +172,7 @@ export default {
       this.task = {};
       this.toggleInput();
     },
+
     deletetask(id) {
       if (confirm("Are you sure you want to delete?")){
         this.$store.commit("deleteTask", id);
@@ -188,36 +193,28 @@ export default {
         this.toggleInput();
       }
       else{
-
-        console.log('okrrrrr')
         this.$store.commit('editTask', this.task)
-        this.action = 'addTask'
-        this.task = {};
+        // this.action = 'addTask'
+        // this.task = {};
         this.toggleInput()
         
       }
     },
 
-    addComplete() {
-      this.$store.commit("complete");
-    },
   },
   computed: {
-    ...mapState({
-      tasks: "tasks",
-    }),
-    // ...mapGetters({
-    //   return : this.$store.state.completeTasks
-    // }),
+    ...mapGetters({
+      mytasks: 'getTasks'
+    })
+
   },
 
   watch: {
-    taskComplete() {
-      if (this.t.complete === true) {
-        console.log("hey");
-        this.addComplete();
+    mytasks(){
+      if(this.mytasks.complete === true){
+        this.mytasks.status === 'complete'
       }
-    },
+    }
   },
 
   beforeCreate() {
@@ -227,4 +224,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped></style>
+<style scoped>
+
+
+</style>
